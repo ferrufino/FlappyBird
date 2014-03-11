@@ -110,7 +110,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      */
     public Playground() {
 
-        setSize(800, 600);
+        setSize(600, 800);
         ballClicked = false;
         BEGIN = true;
         pause = false;
@@ -126,7 +126,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
         nombreArchivo = "Archivo.txt";
 
-        gravedad = 6;
+        gravedad = 7;
         time = 0;
         score = 0;                    //puntaje inicial
         vidas = 5;                    //vida inicial
@@ -266,7 +266,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         //si el rectangulo de la posicion inicial fue presionada se inicializa el tiempo
         if (boxClicked) {
 
-            time += 0.020;
+            time += 0.030;
             // basketBall.setSpeedX(velXI);
             basketBall.setSpeedY((velYI * -1) + gravedad * time);
             //basketBall.setPosX(basketBall.getPosX() + (int) (basketBall.getSpeedX()));
@@ -318,7 +318,10 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         if (fireBasket.getPosX() + fireBasket.getAncho() > getWidth()) {      //si se pasa del borde de la derecha
             fireBasket.setPosX(getWidth() - fireBasket.getAncho());
         }
-
+        //basketBall colisiona arriba
+        if(basketBall.getPosY()  < 10){
+            basketBall.setPosY(10);
+        }
         //basketBall colisiona abajo
         if (basketBall.getPosY() + basketBall.getAlto() > getHeight() - 30) {
 
@@ -615,10 +618,10 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             if (!pause) {
 
                 boxClicked = true;
-                speed = 9;
+                speed = 6;
                 velXI = speed * (Math.cos(Math.toRadians(45)));
                 velYI = speed * (Math.sin(Math.toRadians(45)));
-                time=0;
+                time=0; //time hace que se pueda volver a hacer click;
                 ballClicked = true;
 
             }
