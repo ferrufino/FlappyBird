@@ -16,6 +16,7 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JOptionPane;
+import java.util.LinkedList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.File;
@@ -33,7 +34,7 @@ import javax.swing.JFrame;//
 
 /**
  *
- * @author Ferrufino
+ * @author Ferrufino y Andres
  */
 public class Playground extends JFrame implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 
@@ -103,7 +104,9 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private String bclicked;
     private double vyi;
     private double vxi;
-
+   
+    private LinkedList<Pipe> columns;
+    
     /**
      * Metodo <I>PlayGround()</I> de la clase <code>PlayGround</code>. Es el
      * constructor de la clase donde se definen las variables
@@ -165,7 +168,12 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
         URL cHURL = this.getClass().getResource("Images/boom.png");
         chocan = Toolkit.getDefaultToolkit().getImage(cHURL);
-
+        //Se cargan los pipes 
+        for(int i=0;i<4;i++){
+            if(i%2==0){
+                
+            }
+        }
         //Inicializadores 
         addKeyListener(this);
         addMouseListener(this);
