@@ -104,16 +104,20 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private String bclicked;
     private double vyi;
     private double vxi;
+ 
    
-    private LinkedList<Pipe> columns;
-    
+    //Declaracion de objetos pipe
+    private LinkedList<Pipe> listTop;
+    private LinkedList<Pipe> listBot;
+    private Pipe columnsTop;
+    private Pipe columnsBot;
     /**
      * Metodo <I>PlayGround()</I> de la clase <code>PlayGround</code>. Es el
      * constructor de la clase donde se definen las variables
      */
     public Playground() {
 
-        setSize(600, 800);
+        setSize(560, 760);
         ballClicked = false;
         BEGIN = true;
         pause = false;
@@ -147,10 +151,11 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         posX = 100;     //se generarán los basketBalls en posiciones aleatorias fuera del applet
         posY = 100;
 
-        URL fbURL = this.getClass().getResource("Images/fireBasket.gif");
-        fireBasket = new Pipe((getWidth() - 150), (getHeight() - 130), Toolkit.getDefaultToolkit().getImage(fbURL));
+        URL fbURL = this.getClass().getResource("Images/barArriba.png");
+        URL bbotURL = this.getClass().getResource("Images/barAbajo.png");
+        URL bbURL = this.getClass().getResource("Images/fish.png");
+        fireBasket = new Pipe(50, 250, Toolkit.getDefaultToolkit().getImage(bbotURL));
 
-        URL bbURL = this.getClass().getResource("Images/basketBall.gif");
         basketBall = new Bird(50, 250, Toolkit.getDefaultToolkit().getImage(bbURL));
 
         box = new Rectangle(50, 250, basketBall.getAncho(), basketBall.getAlto());
@@ -160,7 +165,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         URL bgURL = this.getClass().getResource("Images/background3.jpg");
         background = Toolkit.getDefaultToolkit().getImage(bgURL);
 
-        URL bbalURL = this.getClass().getResource("Images/basketBall1.png");
+        URL bbalURL = this.getClass().getResource("Images/fish.png");
         basketBall1 = Toolkit.getDefaultToolkit().getImage(bbalURL);
 
         URL fbasURL = this.getClass().getResource("Images/fireBasket1.png");
@@ -169,11 +174,17 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         URL cHURL = this.getClass().getResource("Images/boom.png");
         chocan = Toolkit.getDefaultToolkit().getImage(cHURL);
         //Se cargan los pipes 
+        listTop = new LinkedList<Pipe>();
+        listBot = new LinkedList<Pipe>();
         for(int i=0;i<4;i++){
-            if(i%2==0){
-                
-            }
+           columnsTop = new Pipe(100+(i*50), 400, Toolkit.getDefaultToolkit().getImage(fbURL));
+           listTop.add(columnsTop);
+           
+           columnsBot = new Pipe(100+(i*50), 0, Toolkit.getDefaultToolkit().getImage(bbotURL));
+           listBot.add(columnsBot);
+           
         }
+        
         //Inicializadores 
         addKeyListener(this);
         addMouseListener(this);
@@ -225,6 +236,19 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                 System.out.println("Error en " + e.toString());
             }
             grabar = false;
+        }
+        //Actualizacion de Pipes
+         for (int i = 0; i < listTop.size(); i++) {
+            columnsTop = (Pipe) (listTop.get(i));
+            
+            columnsTop.setPosX(columnsTop.getPosX()-1);
+            
+        }
+         
+        for (int i = 0; i < listBot.size(); i++) {
+            columnsBot = (Pipe) (listBot.get(i));
+             columnsBot.setPosX(columnsBot.getPosX()-1);
+           
         }
         //si la bandera de cargar esta en true se carga del archivo al juego y se asignan los valores
 
@@ -529,12 +553,16 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                         }
 
                         g.setColor(Color.white);
-
-                        if (action) {
-                            g.drawImage(fireBasket.getImagenI(), fireBasket.getPosX(), fireBasket.getPosY(), this);
-                        } else {
-                            g.drawImage(fireBasket1, fireBasket.getPosX(), fireBasket.getPosY(), this);
+                        
+                        for (int i = 0; i < listTop.size(); i++) {
+                             columnsTop = (Pipe) (listTop.get(i));
+                            g.drawImage(columnsTop.getImagenI(), columnsTop.getPosX(), columnsTop.getPosY(), this);
                         }
+                        for (int i = 0; i < listBot.size(); i++) {
+                             columnsBot = (Pipe) (listBot.get(i));
+                            g.drawImage(columnsBot.getImagenI(), columnsBot.getPosX(), columnsBot.getPosY(), this);
+                        }
+                        
                         if (ballClicked) {
                             g.drawImage(basketBall.getImagenI(), basketBall.getPosX(), basketBall.getPosY(), this);
 
