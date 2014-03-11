@@ -3,8 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package flappybird;
+
 import java.awt.Rectangle;
 import java.applet.Applet;
 import java.applet.AudioClip;
@@ -30,20 +30,21 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.awt.Point;
 import javax.swing.JFrame;// 
+
 /**
  *
  * @author Ferrufino
  */
 public class Playground extends JFrame implements Runnable, KeyListener, MouseListener, MouseMotionListener {
-    
+
     private static final long serialVersionUID = 1L;
     // Se declaran las variables objetos. 
     private Image dbImage;	// Imagen a proyectar	
     private Graphics dbg;	// Objeto grafico
     private SoundClip fail;    // Objeto AudioClip
     private SoundClip collide;    //Objeto AudioClip 
-    private Bloque fireBasket;    // Objeto de la clase Elefante
-    private Pelota basketBall;   //Objeto de la clase Raton
+    private Pipe fireBasket;    // Objeto de la clase Elefante
+    private Bird basketBall;   //Objeto de la clase Raton
     private Rectangle box;
 
     //variables auxiliares para cargar
@@ -107,7 +108,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      * Metodo <I>PlayGround()</I> de la clase <code>PlayGround</code>. Es el
      * constructor de la clase donde se definen las variables
      */
-    public PlayGround() {
+    public Playground() {
 
         setSize(800, 600);
         ballClicked = false;
@@ -137,32 +138,32 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         velYI = 0;
         //Se cargan los sonidos.
 
-        collide = new SoundClip("sounds/applause.wav");
-        fail = new SoundClip("sounds/fail-buzzer-03.wav");
+        collide = new SoundClip("Sounds/applause.wav");
+        fail = new SoundClip("Sounds/fail-buzzer-03.wav");
 
         posX = 100;     //se generarán los basketBalls en posiciones aleatorias fuera del applet
         posY = 100;
 
-        URL fbURL = this.getClass().getResource("images/fireBasket.gif");
-        fireBasket = new Bloque((getWidth() - 150), (getHeight() - 130), Toolkit.getDefaultToolkit().getImage(fbURL));
+        URL fbURL = this.getClass().getResource("Images/fireBasket.gif");
+        fireBasket = new Pipe((getWidth() - 150), (getHeight() - 130), Toolkit.getDefaultToolkit().getImage(fbURL));
 
-        URL bbURL = this.getClass().getResource("images/basketBall.gif");
-        basketBall = new Pelota(50, 250, Toolkit.getDefaultToolkit().getImage(bbURL));
+        URL bbURL = this.getClass().getResource("Images/basketBall.gif");
+        basketBall = new Bird(50, 250, Toolkit.getDefaultToolkit().getImage(bbURL));
 
         box = new Rectangle(50, 250, basketBall.getAncho(), basketBall.getAlto());
-        URL xuURL = this.getClass().getResource("images/gOVER.png");
+        URL xuURL = this.getClass().getResource("Images/gOVER.png");
         gameover = Toolkit.getDefaultToolkit().getImage(xuURL);
 
-        URL bgURL = this.getClass().getResource("images/background3.jpg");
+        URL bgURL = this.getClass().getResource("Images/background3.jpg");
         background = Toolkit.getDefaultToolkit().getImage(bgURL);
 
-        URL bbalURL = this.getClass().getResource("images/basketBall1.png");
+        URL bbalURL = this.getClass().getResource("Images/basketBall1.png");
         basketBall1 = Toolkit.getDefaultToolkit().getImage(bbalURL);
 
-        URL fbasURL = this.getClass().getResource("images/fireBasket1.png");
+        URL fbasURL = this.getClass().getResource("Images/fireBasket1.png");
         fireBasket1 = Toolkit.getDefaultToolkit().getImage(fbasURL);
 
-        URL cHURL = this.getClass().getResource("images/boom.png");
+        URL cHURL = this.getClass().getResource("Images/boom.png");
         chocan = Toolkit.getDefaultToolkit().getImage(cHURL);
 
         //Inicializadores 
@@ -266,9 +267,9 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         if (boxClicked) {
 
             time += 0.020;
-            basketBall.setSpeedX(velXI);
+            // basketBall.setSpeedX(velXI);
             basketBall.setSpeedY((velYI * -1) + gravedad * time);
-            basketBall.setPosX(basketBall.getPosX() + (int) (basketBall.getSpeedX()));
+            //basketBall.setPosX(basketBall.getPosX() + (int) (basketBall.getSpeedX()));
             basketBall.setPosY(basketBall.getPosY() + (int) (basketBall.getSpeedY()));
 
         }
@@ -508,7 +509,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                         g.setFont(new Font("Avenir Black", Font.ITALIC, 18));
 
                         g.drawString("Score: " + basketBall.getConteo(), 550, 60);
-
+                        g.drawString("Debug: " + boxClicked, 550, 100);
                         g.drawString("Life: " + vidas, 550, 80);
                         if (soundsOn) {
                             g.drawString("Sound: " + soundOn, 650, 80);
@@ -610,6 +611,18 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         if (e.getKeyCode() == KeyEvent.VK_S) {
             soundsOn = !soundsOn;
         }
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            if (!pause) {
+
+                boxClicked = true;
+                speed = 9;
+                velXI = speed * (Math.cos(Math.toRadians(45)));
+                velYI = speed * (Math.sin(Math.toRadians(45)));
+                time=0;
+                ballClicked = true;
+
+            }
+        }
 
     }
 
@@ -619,7 +632,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     public void keyReleased(KeyEvent e) {   //metodo cuandos e suelta la tecla
 
         action = false; //Presiono flecha arriba
-
+        
     }
     /*
      *Metodo mouseClicked
@@ -629,17 +642,6 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      */
 
     public void mouseClicked(MouseEvent e) {
-
-        if (!pause) {
-            if (box.contains(e.getX(), e.getY()) && (box.getX() == basketBall.getPosX())) {
-                boxClicked = true;
-                speed = (int) ((Math.random() * ((6 + difVel) - (3 + difVel))) + 3 + difVel);
-                velXI = speed * (Math.cos(Math.toRadians(45)));
-                velYI = speed * (Math.sin(Math.toRadians(45)));
-                ballClicked = true;
-
-            }
-        }
 
     }
 
@@ -658,6 +660,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     public void mouseReleased(MouseEvent e) {//metodo cuando el mouse es soltado
 
         ballClicked = false;
+
     }
 
     public void mouseMoved(MouseEvent e) {  //metodos de MouseMotionListener

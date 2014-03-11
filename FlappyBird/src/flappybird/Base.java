@@ -141,7 +141,7 @@ public class Base {
      * del rectangulo
      */
     public Rectangle getPerimetro() {
-        return new Rectangle(getPosX(), getPosY(), getAncho() - 50, getAlto() - 50);
+        return new Rectangle(getPosX(), getPosY(), getAncho(), getAlto());
     }
 
     /**
