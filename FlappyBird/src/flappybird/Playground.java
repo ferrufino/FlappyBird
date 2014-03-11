@@ -165,7 +165,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         URL xuURL = this.getClass().getResource("Images/gOVER.png");
         gameover = Toolkit.getDefaultToolkit().getImage(xuURL);
 
-        URL bgURL = this.getClass().getResource("Images/background3.jpg");
+        URL bgURL = this.getClass().getResource("Images/fondo.png");
         background = Toolkit.getDefaultToolkit().getImage(bgURL);
 
         URL bbalURL = this.getClass().getResource("Images/fish.png");
@@ -244,9 +244,16 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         }
         //Actualizacion de Pipes
         for (int i = 0; i < listTop.size(); i++) {
+            
+
+            
             columnsTop = (Pipe) (listTop.get(i));
 
             columnsTop.setPosX(columnsTop.getPosX() - 1);
+            
+           if (columnsTop.getPosX() == basketBall.getPosX()) {
+               score++;
+            }
 
         }
 
@@ -367,7 +374,9 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             if (columnsTop.intersecta(basketBall) || columnsBot.intersecta(basketBall)) {
                 if (true){ //soundsOn) {
                     collide.play();
+                    
                 }
+                score=0;
                 basketBall.setPosX(50);     // se reposiciona el basketBall
                 basketBall.setPosY(250);
                 boxClicked = false;
@@ -406,6 +415,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             if (soundsOn) {
                 fail.play();
             }
+            score=0;
             boxClicked = false;
             time = 0;
             basketBall.setPosX(50);  //se reposiciona en su posicion inicial
@@ -588,8 +598,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                         g.setColor(Color.white);
                         g.setFont(new Font("Avenir Black", Font.ITALIC, 18));
 
-                        g.drawString("Score: " + basketBall.getConteo(), 550, 60);
-                        g.drawString("Debug: " + boxClicked, 550, 100);
+                       
                         g.drawString("Life: " + vidas, 550, 80);
                         if (soundsOn) {
                             g.drawString("Sound: " + soundOn, 650, 80);
@@ -615,6 +624,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                             g.drawImage(basketBall1, basketBall.getPosX(), basketBall.getPosY(), this);
 
                         }
+                         g.drawString("Score: " + score,200, 60);
                     }
 
                 }
