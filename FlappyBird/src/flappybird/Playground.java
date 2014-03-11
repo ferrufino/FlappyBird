@@ -117,7 +117,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      */
     public Playground() {
 
-        setSize(560, 760);
+        setSize(450, 660);
         ballClicked = false;
         BEGIN = true;
         pause = false;
@@ -176,11 +176,11 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         //Se cargan los pipes 
         listTop = new LinkedList<Pipe>();
         listBot = new LinkedList<Pipe>();
-        for(int i=0;i<4;i++){
-           columnsTop = new Pipe(100+(i*50), 400, Toolkit.getDefaultToolkit().getImage(fbURL));
+        for(int i=0;i<2;i++){
+           columnsTop = new Pipe(100+(i*200), 450, Toolkit.getDefaultToolkit().getImage(fbURL));
            listTop.add(columnsTop);
            
-           columnsBot = new Pipe(100+(i*50), 0, Toolkit.getDefaultToolkit().getImage(bbotURL));
+           columnsBot = new Pipe(100+(i*300), 0, Toolkit.getDefaultToolkit().getImage(bbotURL));
            listBot.add(columnsBot);
            
         }
@@ -333,6 +333,27 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      * con las orillas del <code>Applet</code>.
      */
     public void ChecaColision() {
+        
+        //Pipes colisionan con lado izquierdo del applet
+         for (int i = 0; i < listTop.size(); i++) {
+            columnsTop = (Pipe) (listTop.get(i));
+             
+            if (columnsTop.getPosX()<-80) {
+                columnsTop.setPosX(getWidth());
+            }
+            
+            
+        }
+         
+        for (int i = 0; i < listBot.size(); i++) {
+            columnsBot = (Pipe) (listBot.get(i));
+            
+            if (columnsBot.getPosX()<-80) {
+                columnsBot.setPosX(getWidth());
+            }
+            
+           
+        }
 
         //checa colision con el applet
         if (fireBasket.getPosY() < 0) {              //choca borde de arriba
