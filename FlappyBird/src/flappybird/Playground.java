@@ -104,13 +104,14 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private String bclicked;
     private double vyi;
     private double vxi;
- 
-   
+    private int[] array = new int[]{-100,0, 75};
+
     //Declaracion de objetos pipe
     private LinkedList<Pipe> listTop;
     private LinkedList<Pipe> listBot;
     private Pipe columnsTop;
     private Pipe columnsBot;
+
     /**
      * Metodo <I>PlayGround()</I> de la clase <code>PlayGround</code>. Es el
      * constructor de la clase donde se definen las variables
@@ -176,15 +177,17 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         //Se cargan los pipes 
         listTop = new LinkedList<Pipe>();
         listBot = new LinkedList<Pipe>();
-        for(int i=0;i<2;i++){
-           columnsTop = new Pipe(100+(i*200), 450, Toolkit.getDefaultToolkit().getImage(fbURL));
-           listTop.add(columnsTop);
-           
-           columnsBot = new Pipe(100+(i*300), 0, Toolkit.getDefaultToolkit().getImage(bbotURL));
-           listBot.add(columnsBot);
-           
+
+        for (int i = 0; i < 2; i++) {
+            int temp = (int) (Math.random() * 2);
+            columnsTop = new Pipe(100 + (i * 200), 450 + array[temp], Toolkit.getDefaultToolkit().getImage(fbURL));
+            listTop.add(columnsTop);
+
+            columnsBot = new Pipe(100 + (i * 200), 0 + array[temp], Toolkit.getDefaultToolkit().getImage(bbotURL));
+            listBot.add(columnsBot);
+
         }
-        
+
         //Inicializadores 
         addKeyListener(this);
         addMouseListener(this);
@@ -238,17 +241,17 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             grabar = false;
         }
         //Actualizacion de Pipes
-         for (int i = 0; i < listTop.size(); i++) {
+        for (int i = 0; i < listTop.size(); i++) {
             columnsTop = (Pipe) (listTop.get(i));
-            
-            columnsTop.setPosX(columnsTop.getPosX()-1);
-            
+
+            columnsTop.setPosX(columnsTop.getPosX() - 1);
+
         }
-         
+
         for (int i = 0; i < listBot.size(); i++) {
             columnsBot = (Pipe) (listBot.get(i));
-             columnsBot.setPosX(columnsBot.getPosX()-1);
-           
+            columnsBot.setPosX(columnsBot.getPosX() - 1);
+
         }
         //si la bandera de cargar esta en true se carga del archivo al juego y se asignan los valores
 
@@ -333,27 +336,28 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      * con las orillas del <code>Applet</code>.
      */
     public void ChecaColision() {
-        
+
         //Pipes colisionan con lado izquierdo del applet
-         for (int i = 0; i < listTop.size(); i++) {
+        for (int i = 0; i < listTop.size(); i++) {
+            int temp= (int) (Math.random()*3);
             columnsTop = (Pipe) (listTop.get(i));
-             
-            if (columnsTop.getPosX()<-80) {
+
+            if (columnsTop.getPosX() < -80) {
                 columnsTop.setPosX(getWidth());
+                columnsTop.setPosY(450);
+                columnsTop.setPosY(columnsTop.getPosY()+ array[temp]);
             }
-            
-            
-        }
-         
-        for (int i = 0; i < listBot.size(); i++) {
             columnsBot = (Pipe) (listBot.get(i));
-            
-            if (columnsBot.getPosX()<-80) {
+
+            if (columnsBot.getPosX() < -80) {
                 columnsBot.setPosX(getWidth());
+                columnsBot.setPosY(0);
+                columnsBot.setPosY(columnsBot.getPosY()+ array[temp]);
             }
-            
-           
+
         }
+
+
 
         //checa colision con el applet
         if (fireBasket.getPosY() < 0) {              //choca borde de arriba
@@ -372,7 +376,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             fireBasket.setPosX(getWidth() - fireBasket.getAncho());
         }
         //basketBall colisiona arriba
-        if(basketBall.getPosY()  < 10){
+        if (basketBall.getPosY() < 10) {
             basketBall.setPosY(10);
         }
         //basketBall colisiona abajo
@@ -574,16 +578,16 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                         }
 
                         g.setColor(Color.white);
-                        
+
                         for (int i = 0; i < listTop.size(); i++) {
-                             columnsTop = (Pipe) (listTop.get(i));
+                            columnsTop = (Pipe) (listTop.get(i));
                             g.drawImage(columnsTop.getImagenI(), columnsTop.getPosX(), columnsTop.getPosY(), this);
                         }
                         for (int i = 0; i < listBot.size(); i++) {
-                             columnsBot = (Pipe) (listBot.get(i));
+                            columnsBot = (Pipe) (listBot.get(i));
                             g.drawImage(columnsBot.getImagenI(), columnsBot.getPosX(), columnsBot.getPosY(), this);
                         }
-                        
+
                         if (ballClicked) {
                             g.drawImage(basketBall.getImagenI(), basketBall.getPosX(), basketBall.getPosY(), this);
 
@@ -678,7 +682,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                 speed = 6;
                 velXI = speed * (Math.cos(Math.toRadians(45)));
                 velYI = speed * (Math.sin(Math.toRadians(45)));
-                time=0; //time hace que se pueda volver a hacer click;
+                time = 0; //time hace que se pueda volver a hacer click;
                 ballClicked = true;
 
             }
@@ -692,7 +696,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     public void keyReleased(KeyEvent e) {   //metodo cuandos e suelta la tecla
 
         action = false; //Presiono flecha arriba
-        
+
     }
     /*
      *Metodo mouseClicked
