@@ -95,6 +95,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private boolean pause; //Permite al usuario pausar el juego
     private boolean action;
     private boolean soundsOn;
+    private boolean gameOver;
     private long tiempoActual;
     private long tiempoInicial;
     private boolean BEGIN;
@@ -104,7 +105,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private String bclicked;
     private double vyi;
     private double vxi;
-    private int[] array = new int[]{-100,0, 75};
+    private int[] array = new int[]{-100, 0, 75};
 
     //Declaracion de objetos pipe
     private LinkedList<Pipe> listTop;
@@ -117,7 +118,8 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      * constructor de la clase donde se definen las variables
      */
     public Playground() {
-
+        
+        gameOver=false;
         setSize(450, 660);
         ballClicked = false;
         BEGIN = true;
@@ -183,7 +185,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             columnsTop = new Pipe(100 + (i * 200), 450 + array[temp], Toolkit.getDefaultToolkit().getImage(fbURL));
             listTop.add(columnsTop);
 
-            columnsBot = new Pipe(100 + (i * 200), 0 + array[temp], Toolkit.getDefaultToolkit().getImage(bbotURL));
+            columnsBot = new Pipe(100 + (i * 200), -200 + array[temp], Toolkit.getDefaultToolkit().getImage(bbotURL));
             listBot.add(columnsBot);
 
         }
@@ -339,25 +341,43 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
         //Pipes colisionan con lado izquierdo del applet
         for (int i = 0; i < listTop.size(); i++) {
-            int temp= (int) (Math.random()*3);
+            int temp = (int) (Math.random() * 3);
             columnsTop = (Pipe) (listTop.get(i));
 
             if (columnsTop.getPosX() < -80) {
                 columnsTop.setPosX(getWidth());
                 columnsTop.setPosY(450);
-                columnsTop.setPosY(columnsTop.getPosY()+ array[temp]);
+                columnsTop.setPosY(columnsTop.getPosY() + array[temp]);
             }
             columnsBot = (Pipe) (listBot.get(i));
 
             if (columnsBot.getPosX() < -80) {
                 columnsBot.setPosX(getWidth());
-                columnsBot.setPosY(0);
-                columnsBot.setPosY(columnsBot.getPosY()+ array[temp]);
+                columnsBot.setPosY(-200);
+                columnsBot.setPosY(columnsBot.getPosY() + array[temp]);
+
             }
 
         }
+        //checa colision del pajaro con los pilares
+        for (int i = 0; i < listTop.size(); i++) {
+            columnsTop = (Pipe) (listTop.get(i));
+            columnsBot = (Pipe) (listBot.get(i));
 
-
+            if (columnsTop.intersecta(basketBall) || columnsBot.intersecta(basketBall)) {
+                if (true){ //soundsOn) {
+                    collide.play();
+                }
+                basketBall.setPosX(50);     // se reposiciona el basketBall
+                basketBall.setPosY(250);
+                boxClicked = false;
+                time = 0;
+                ballClicked = false;
+                //IMPLEMENTAR GAME OVER
+                gameOver=true;
+                
+            }
+        }
 
         //checa colision con el applet
         if (fireBasket.getPosY() < 0) {              //choca borde de arriba
