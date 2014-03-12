@@ -44,6 +44,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private Graphics dbg;	// Objeto grafico
     private SoundClip fail;    // Objeto AudioClip
     private SoundClip collide;    //Objeto AudioClip 
+    private SoundClip flap;    //Objeto AudioClip 
     private Pipe fireBasket;    // Objeto de la clase Elefante
     private Pipe imagenAbajo1;
     private Pipe imagenAbajo2;
@@ -119,7 +120,11 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private String bclicked;
     private double vyi;
     private double vxi;
-    private int[] array = new int[]{-100, -50, 0, 50, 75};
+    private int[] array = new int[]{-30, -10, 0, 10, 30};
+    private int[] array2 = new int[]{-75, -50, 0, 50, 75};
+    private int[] array3 = new int[]{-150, -50, 10, 80,120};
+
+
 
     //Declaracion de objetos pipe
     private LinkedList<Pipe> listTop;
@@ -161,7 +166,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         tempInicio = 0;
         gravedad = 9;
         time = 0;
-        score = 0;                    //puntaje inicial
+        score = 5;                    //puntaje inicial
         vidas = 5;                    //vida inicial
         xMayor = (getWidth() - getWidth() / 10);           //posicion máxima en x que tendrán el fishFlap
         xMenor = 0;           //posicion mínima en x que tendrá el fishFlap
@@ -173,7 +178,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
         collide = new SoundClip("Sounds/fail-buzzer-03.wav");
         fail = new SoundClip("Sounds/fail-buzzer-03.wav");
-
+        flap = new SoundClip("Sounds/Choque.wav");
         posX = 100;     //se generarán los fishFlaps en posiciones aleatorias fuera del applet
         posY = 100;
         URL plURL = this.getClass().getResource("Images/taptoFlap.png");
@@ -228,21 +233,21 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         columnsTop = new Pipe(getWidth(), 350 + array[temp1], Toolkit.getDefaultToolkit().getImage(fbURL));
         listTop.add(columnsTop);
 
-        columnsBot = new Pipe(getWidth(), -280 + array[temp1], Toolkit.getDefaultToolkit().getImage(bbotURL));
+        columnsBot = new Pipe(getWidth(), -300 + array[temp1], Toolkit.getDefaultToolkit().getImage(bbotURL));
         listBot.add(columnsBot);
         //pilar 2
         int temp2 = (int) (Math.random() * 5);
         columnsTop = new Pipe(getWidth() + (diffColumns + 75), 350 + array[temp2], Toolkit.getDefaultToolkit().getImage(fbURL));
         listTop.add(columnsTop);
 
-        columnsBot = new Pipe(getWidth() + (diffColumns + 75), -280 + array[temp2], Toolkit.getDefaultToolkit().getImage(bbotURL));
+        columnsBot = new Pipe(getWidth() + (diffColumns + 75), -300 + array[temp2], Toolkit.getDefaultToolkit().getImage(bbotURL));
         listBot.add(columnsBot);
         //pilar3
         int temp3 = (int) (Math.random() * 5);
         columnsTop = new Pipe(getWidth() + (diffColumns + 75) * 2, 350 + array[temp3], Toolkit.getDefaultToolkit().getImage(fbURL));
         listTop.add(columnsTop);
 
-        columnsBot = new Pipe(getWidth() + (diffColumns + 75) * 2, -280 + array[temp3], Toolkit.getDefaultToolkit().getImage(bbotURL));
+        columnsBot = new Pipe(getWidth() + (diffColumns + 75) * 2, -300 + array[temp3], Toolkit.getDefaultToolkit().getImage(bbotURL));
         listBot.add(columnsBot);
 
         //Inicializadores 
@@ -289,18 +294,51 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     public void Actualiza() {
 
         //Actualizacion de distancia entre Pilares
-        if (score == 5 || score == 10) {
+        if (score == 10 || score == 20) {
             if (tempLevelup == 0) {
                 diffColumns -= 70;
+              
                 tempLevelup++;
             }
 
         }
-        if (score != 5 && score != 10) {
+        if (score != 10 && score != 20) {
             tempLevelup = 0;
         }
-        //////
+        ////// pilares como varian
+        /*
+        if (score == 10) {
+             ///1
+        columnsTop = (Pipe) (listTop.get(0));
+        columnsBot = (Pipe) (listBot.get(0));
+        int tempa = (int) (Math.random() * 5);
+     
+        columnsTop.setPosY(350 + array[tempa]);
+      
+        columnsBot.setPosY(-300 + array[tempa]);
 
+        ///2
+        columnsTop = (Pipe) (listTop.get(1));
+        columnsBot = (Pipe) (listBot.get(1));
+        int tempb = (int) (Math.random() * 5);
+
+        columnsTop.setPosX(getWidth() + (diffColumns + 75));
+        columnsTop.setPosY(350 + array[tempb]);
+        columnsBot.setPosX(getWidth() + (diffColumns + 75));
+        columnsBot.setPosY(-280 + array[tempb]);
+
+        ///3
+        columnsTop = (Pipe) (listTop.get(2));
+        columnsBot = (Pipe) (listBot.get(2));
+        int tempc = (int) (Math.random() * 5);
+
+        columnsTop.setPosX(getWidth() + (diffColumns + 75) * 2);
+        columnsTop.setPosY(350 + array[tempc]);
+        columnsBot.setPosX(getWidth() + (diffColumns + 75) * 2);
+        columnsBot.setPosY(-280 + array[tempc]);
+        
+        }
+        */
         //si la bandera de grabar esta en true se graba el juego en el archivo 
         if (grabar) {
             try {
@@ -333,7 +371,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             imagenAbajo2.setPosX(450);
         }
         //Actualizacion de Pipes
-        if (score < 5) {
+        if (score < 10) {
             for (int i = 0; i < 3; i++) {
 
                 columnsTop = (Pipe) (listTop.get(i));
@@ -353,7 +391,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
             }
 
-        } else if (score >= 5 && score < 10) {
+        } else if (score >= 10 && score < 20) {
             for (int i = 0; i < 3; i++) {
 
                 columnsTop = (Pipe) (listTop.get(i));
@@ -372,7 +410,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                 columnsBot.setPosX(columnsBot.getPosX() - 2);
 
             }
-        } else if (score >= 10) {
+        } else if (score >= 20) {
             for (int i = 0; i < 3; i++) {
 
                 columnsTop = (Pipe) (listTop.get(i));
@@ -450,19 +488,35 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             if (columnsTop.getPosX() < -75) {
                 columnsTop.setPosX(getWidth() + diffColumns + 75);
                 columnsTop.setPosY(350);
+                if (score < 10) {
                 columnsTop.setPosY(columnsTop.getPosY() + array[temp]);
+                } else if (score < 20 ) {
+                
+                columnsTop.setPosY(columnsTop.getPosY() + array2[temp]);
+                } else {
+                    
+                columnsTop.setPosY(columnsTop.getPosY() + array3[temp]);
+                }
             }
             columnsBot = (Pipe) (listBot.get(i));
 
             if (columnsBot.getPosX() < -75) {
                 columnsBot.setPosX(getWidth() + diffColumns + 75);
-                columnsBot.setPosY(-280);
+                columnsBot.setPosY(-300);
+                if (score < 10) {
                 columnsBot.setPosY(columnsBot.getPosY() + array[temp]);
-
+                } else if (score < 20 ) {
+                
+                columnsBot.setPosY(columnsBot.getPosY() + array2[temp]);
+                } else {
+                    
+                columnsBot.setPosY(columnsBot.getPosY() + array3[temp]);
+                }
             }
         }
 
         //checa colision del pajaro con los pilares
+        /*
         for (int i = 0; i < listTop.size(); i++) {
             columnsTop = (Pipe) (listTop.get(i));
             columnsBot = (Pipe) (listBot.get(i));
@@ -473,7 +527,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
                 }
                 score = 0;
-                fishFlap.setPosX(50);     // se reposiciona el fishFlap
+                fishFlap.setPosX(60);     // se reposiciona el fishFlap
                 fishFlap.setPosY(250);
                 boxClicked = false;
                 time = 0;
@@ -482,7 +536,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
             }
         }
-
+         */
         //checa colision con el applet
         if (fireBasket.getPosY() < 0) {              //choca borde de arriba
             fireBasket.setPosY(0);
@@ -502,12 +556,31 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
         //fishFlap colisiona arriba
         if (fishFlap.getPosY() < 10) {
-            fishFlap.setPosY(10);
+           
+            if (soundsOn) {
+                fail.play();
+            }
+            score = 0;
+            boxClicked = false;
+            time = 0;
+            fishFlap.setPosX(50);  //se reposiciona en su posicion inicial
+            fishFlap.setPosY(250);
+            fishFlap.setSpeedX(0);
+            go = false;
+            // fishFlap.setSpeedY(0);
+            bbspeedy = fishFlap.getSpeedY();
+            bbspeedx = fishFlap.getSpeedX();
+
+            if (fishFlap.getConteo() > 0) {
+                fishFlap.setConteo(fishFlap.getConteo() - 1);
+            }
+            ballClicked = false;
+            
         }
         //fishFlap colisiona abajo
         if (fishFlap.getPosY() + fishFlap.getAlto() > getHeight()) {
 
-            contPerdidas += 1;
+            //contPerdidas += 1;
             if (soundsOn) {
                 fail.play();
             }
@@ -681,7 +754,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                 g.setFont(new Font("Avenir Black", Font.ITALIC, 30));
 
                 g.drawString("Score: " + score, 170, 60);
-                if (score == 5) {
+                if (score == 10) {
                     if (tempLevel2 < 35) {
                         g.drawImage(level2, 30, 100, this);
                         tempLevel2++;
@@ -689,7 +762,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
                 }
 
-                if (score == 10) {
+                if (score == 20) {
                     if (tempLevel3 < 35) {
                         g.drawImage(level3, 30, 100, this);
                         tempLevel3++;
@@ -724,6 +797,10 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      *para pausar el juego
      */
     public void keyPressed(KeyEvent e) {
+            
+        if (soundsOn) {
+            flap.play();
+            }
 
         if (e.getKeyCode() == KeyEvent.VK_P) {
 
@@ -752,8 +829,12 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
         if (e.getKeyCode() == KeyEvent.VK_S) {
             soundsOn = !soundsOn;
+            
         }
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            if (soundsOn) {
+            flap.play();
+            }
             if (!go && (tempInicio != 0)) {
                 restart();
 
@@ -844,7 +925,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         columnsTop.setPosX(getWidth());
         columnsTop.setPosY(350 + array[tempa]);
         columnsBot.setPosX(getWidth());
-        columnsBot.setPosY(-280 + array[tempa]);
+        columnsBot.setPosY(-300 + array[tempa]);
 
         ///2
         columnsTop = (Pipe) (listTop.get(1));
