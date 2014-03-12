@@ -55,7 +55,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private int tempLevel3;
     private int tempLevelup;
     private boolean go;
-  
+
     //variables auxiliares para cargar
     private String[] arr;   //arreglo para grabar
     private String nombreArchivo; //nombre del archivo que se utiliza para cargar/guardar
@@ -100,7 +100,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private int posX;
     private int posY;
     private int score;
-    private int POINTS;
+
     private int xMayor;
     private int xMenor;
     private int yMayor;
@@ -153,10 +153,10 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         soundOn = "On";
         soundOff = "Off";
         soundsOn = true;
-        lose=false;
-        
-        diffColumns=200; //diferencia entre columna
-        
+        lose = false;
+
+        diffColumns = 200; //diferencia entre columna
+
         nombreArchivo = "Archivo.txt";
         tempInicio = 0;
         gravedad = 9;
@@ -178,21 +178,21 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         posY = 100;
         URL plURL = this.getClass().getResource("Images/taptoFlap.png");
         play = Toolkit.getDefaultToolkit().getImage(plURL);
-        
+
         URL tagURL = this.getClass().getResource("Images/tapagain.png");
         playagain = Toolkit.getDefaultToolkit().getImage(tagURL);
-        
+
         URL fbURL = this.getClass().getResource("Images/barArriba.png");
-        
+
         URL namURL = this.getClass().getResource("Images/splshyfish.png");
         name = Toolkit.getDefaultToolkit().getImage(namURL);
-        
+
         URL l2URL = this.getClass().getResource("Images/level-2.png");
         level2 = Toolkit.getDefaultToolkit().getImage(l2URL);
-        
+
         URL l3URL = this.getClass().getResource("Images/level-3.png");
         level3 = Toolkit.getDefaultToolkit().getImage(l3URL);
-        
+
         URL abj1URL = this.getClass().getResource("Images/abajo1.png");
         URL abj2URL = this.getClass().getResource("Images/abajo2.png");
 
@@ -227,24 +227,23 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         int temp1 = (int) (Math.random() * 5);
         columnsTop = new Pipe(getWidth(), 350 + array[temp1], Toolkit.getDefaultToolkit().getImage(fbURL));
         listTop.add(columnsTop);
-       
+
         columnsBot = new Pipe(getWidth(), -280 + array[temp1], Toolkit.getDefaultToolkit().getImage(bbotURL));
         listBot.add(columnsBot);
         //pilar 2
         int temp2 = (int) (Math.random() * 5);
-        columnsTop = new Pipe(getWidth() + (diffColumns+75), 350 + array[temp2], Toolkit.getDefaultToolkit().getImage(fbURL));
+        columnsTop = new Pipe(getWidth() + (diffColumns + 75), 350 + array[temp2], Toolkit.getDefaultToolkit().getImage(fbURL));
         listTop.add(columnsTop);
 
-        columnsBot = new Pipe(getWidth() + (diffColumns+75), -280 + array[temp2], Toolkit.getDefaultToolkit().getImage(bbotURL));
+        columnsBot = new Pipe(getWidth() + (diffColumns + 75), -280 + array[temp2], Toolkit.getDefaultToolkit().getImage(bbotURL));
         listBot.add(columnsBot);
-         //pilar3
+        //pilar3
         int temp3 = (int) (Math.random() * 5);
-        columnsTop = new Pipe(getWidth() + (diffColumns + 75)*2, 350 + array[temp3], Toolkit.getDefaultToolkit().getImage(fbURL));
+        columnsTop = new Pipe(getWidth() + (diffColumns + 75) * 2, 350 + array[temp3], Toolkit.getDefaultToolkit().getImage(fbURL));
         listTop.add(columnsTop);
 
-        columnsBot = new Pipe(getWidth() + (diffColumns + 75)*2, -280 + array[temp3], Toolkit.getDefaultToolkit().getImage(bbotURL));
+        columnsBot = new Pipe(getWidth() + (diffColumns + 75) * 2, -280 + array[temp3], Toolkit.getDefaultToolkit().getImage(bbotURL));
         listBot.add(columnsBot);
-
 
         //Inicializadores 
         addKeyListener(this);
@@ -288,21 +287,20 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      *
      */
     public void Actualiza() {
- 
-  
+
         //Actualizacion de distancia entre Pilares
-        if (score == 5 || score == 10 ) {
+        if (score == 5 || score == 10) {
             if (tempLevelup == 0) {
-                diffColumns-=70;
+                diffColumns -= 70;
                 tempLevelup++;
             }
-        
+
         }
         if (score != 5 && score != 10) {
             tempLevelup = 0;
         }
         //////
-        
+
         //si la bandera de grabar esta en true se graba el juego en el archivo 
         if (grabar) {
             try {
@@ -335,7 +333,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             imagenAbajo2.setPosX(450);
         }
         //Actualizacion de Pipes
-  
+        if (score < 5) {
             for (int i = 0; i < 3; i++) {
 
                 columnsTop = (Pipe) (listTop.get(i));
@@ -344,18 +342,54 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
                 if (columnsTop.getPosX() == fishFlap.getPosX()) {
                     score++;
-                    
+
                 }
 
             }
-        
 
             for (int i = 0; i < 3; i++) {
                 columnsBot = (Pipe) (listBot.get(i));
                 columnsBot.setPosX(columnsBot.getPosX() - 1);
 
             }
-        
+
+        } else if (score >= 5 && score < 10) {
+            for (int i = 0; i < 3; i++) {
+
+                columnsTop = (Pipe) (listTop.get(i));
+
+                columnsTop.setPosX(columnsTop.getPosX() - 2);
+
+                if (columnsTop.getPosX() == fishFlap.getPosX() - 1) {
+                    score++;
+
+                }
+
+            }
+
+            for (int i = 0; i < 3; i++) {
+                columnsBot = (Pipe) (listBot.get(i));
+                columnsBot.setPosX(columnsBot.getPosX() - 2);
+
+            }
+        } else if (score >= 10) {
+            for (int i = 0; i < 3; i++) {
+
+                columnsTop = (Pipe) (listTop.get(i));
+                columnsTop.setPosX(columnsTop.getPosX() - 3);
+                if (columnsTop.getPosX() == fishFlap.getPosX() - 2) {
+                    score++;
+
+                }
+
+            }
+
+            for (int i = 0; i < 3; i++) {
+                columnsBot = (Pipe) (listBot.get(i));
+                columnsBot.setPosX(columnsBot.getPosX() - 3);
+
+            }
+        }
         //Aumento de velocidad
         //si la bandera de cargar esta en true se carga del archivo al juego y se asignan los valores
         if (cargar) {
@@ -385,22 +419,6 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
         }
 
-        if (contPerdidas == 3) {
-            contPerdidas = 0;
-
-            if (gravedad < 17) {
-                gravedad += 7;
-                difVel += 2;
-            } else if (gravedad <= 24) {
-                gravedad += 16;
-                difVel += 2;
-            } else {
-                gravedad += 19;
-
-            }
-
-            vidas--;
-        }
         //si el rectangulo de la posicion inicial fue presionada se inicializa el tiempo
         if (boxClicked) {
 
@@ -410,22 +428,6 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             //fishFlap.setPosX(fishFlap.getPosX() + (int) (fishFlap.getSpeedX()));
             fishFlap.setPosY(fishFlap.getPosY() + (int) (fishFlap.getSpeedY()));
 
-        }
-
-        if (action) {
-            switch (teclaPresionada) {
-                case 1: {
-
-                    fireBasket.setPosX(fireBasket.getPosX() - 4);
-                    break; //se mueve hacia la izquierda
-                }
-                case 2: {
-
-                    fireBasket.setPosX(fireBasket.getPosX() + 4);
-                    break; //se mueve hacia la derecha
-                }
-
-            }
         }
 
         if (fishFlap.getPosY() < getHeight()) {
@@ -439,37 +441,34 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      * con las orillas del <code>Applet</code>.
      */
     public void ChecaColision() {
-         
+
         //Pipes colisionan con lado izquierdo del applet
-       
-            for (int i = 0; i < listTop.size(); i++) {
-                int temp = (int) (Math.random() * 5);
-                columnsTop = (Pipe) (listTop.get(i));
+        for (int i = 0; i < listTop.size(); i++) {
+            int temp = (int) (Math.random() * 5);
+            columnsTop = (Pipe) (listTop.get(i));
 
-                if (columnsTop.getPosX() < -75) {
-                    columnsTop.setPosX(getWidth()+diffColumns+75);
-                    columnsTop.setPosY(350);
-                    columnsTop.setPosY(columnsTop.getPosY() + array[temp]);
-                }
-                columnsBot = (Pipe) (listBot.get(i));
-
-                if (columnsBot.getPosX() < -75) {
-                    columnsBot.setPosX(getWidth()+diffColumns+75);
-                    columnsBot.setPosY(-280);
-                    columnsBot.setPosY(columnsBot.getPosY() + array[temp]);
-
-                }
+            if (columnsTop.getPosX() < -75) {
+                columnsTop.setPosX(getWidth() + diffColumns + 75);
+                columnsTop.setPosY(350);
+                columnsTop.setPosY(columnsTop.getPosY() + array[temp]);
             }
-       
+            columnsBot = (Pipe) (listBot.get(i));
+
+            if (columnsBot.getPosX() < -75) {
+                columnsBot.setPosX(getWidth() + diffColumns + 75);
+                columnsBot.setPosY(-280);
+                columnsBot.setPosY(columnsBot.getPosY() + array[temp]);
+
+            }
+        }
 
         //checa colision del pajaro con los pilares
-            /*
         for (int i = 0; i < listTop.size(); i++) {
             columnsTop = (Pipe) (listTop.get(i));
             columnsBot = (Pipe) (listBot.get(i));
 
             if (columnsTop.intersecta(fishFlap) || columnsBot.intersecta(fishFlap)) {
-                if (true) { //soundsOn) {
+                if (soundsOn) {
                     collide.play();
 
                 }
@@ -480,11 +479,10 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                 time = 0;
                 ballClicked = false;
                 go = false;
-              
 
             }
         }
-*/
+
         //checa colision con el applet
         if (fireBasket.getPosY() < 0) {              //choca borde de arriba
             fireBasket.setPosY(0);
@@ -501,6 +499,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         if (fireBasket.getPosX() + fireBasket.getAncho() > getWidth()) {      //si se pasa del borde de la derecha
             fireBasket.setPosX(getWidth() - fireBasket.getAncho());
         }
+
         //fishFlap colisiona arriba
         if (fishFlap.getPosY() < 10) {
             fishFlap.setPosY(10);
@@ -518,7 +517,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             fishFlap.setPosX(50);  //se reposiciona en su posicion inicial
             fishFlap.setPosY(250);
             fishFlap.setSpeedX(0);
-            go=false;
+            go = false;
             // fishFlap.setSpeedY(0);
             bbspeedy = fishFlap.getSpeedY();
             bbspeedx = fishFlap.getSpeedX();
@@ -642,134 +641,93 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      * @paramg es el <code>objeto grafico</code> usado para dibujar.
      */
     public void paint1(Graphics g) {
-        if (vidas > 0) {
-            if (fireBasket != null) {
 
-                g.drawImage(background, 0, 0, this);
+        if (fireBasket != null) {
 
-                if (pause) {
+            g.drawImage(background, 0, 0, this);
 
-                    g.setFont(new Font("Avenir Black", Font.BOLD, 60));
-                    g.setColor(Color.white);
-                    g.drawString(fireBasket.getPausado(), 400, 400);
-                    //si la bandera booleana de instrucciones esta en true se despliega el menu de instrucciones
+            if (pause) {
 
-                   
+                g.setFont(new Font("Avenir Black", Font.BOLD, 18));
+                g.setColor(Color.white);
+                g.drawString(fireBasket.getPausado(), 200, 400);
+                //si la bandera booleana de instrucciones esta en true se despliega el menu de instrucciones
+
+            } else {
+
+                g.setColor(Color.white);
+                g.setFont(new Font("Avenir Black", Font.ITALIC, 18));
+
+                g.setColor(Color.white);
+
+                for (int i = 0; i < listTop.size(); i++) {
+                    columnsTop = (Pipe) (listTop.get(i));
+                    g.drawImage(columnsTop.getImagenI(), columnsTop.getPosX(), columnsTop.getPosY(), this);
+                }
+                for (int i = 0; i < listBot.size(); i++) {
+                    columnsBot = (Pipe) (listBot.get(i));
+                    g.drawImage(columnsBot.getImagenI(), columnsBot.getPosX(), columnsBot.getPosY(), this);
+                }
+
+                if (ballClicked) {
+                    g.drawImage(fishFlap.getImagenI(), fishFlap.getPosX(), fishFlap.getPosY(), this);
 
                 } else {
-                    //si la bandera booleana de instrucciones esta en true se despliega el menu de instrucciones
-                    if (instrucciones) {
-                    
-                        pause = true;
-                    } else {
-                    
-                        g.setColor(Color.white);
-                        g.setFont(new Font("Avenir Black", Font.ITALIC, 18));
+                    g.drawImage(fishFlap1, fishFlap.getPosX(), fishFlap.getPosY(), this);
 
-                        g.drawString("Life: " + vidas, 550, 80);
-                        if (soundsOn) {
-                            g.drawString("Sound: " + soundOn, 650, 80);
-                        } else {
-                            g.drawString("Sound: " + soundOff, 650, 80);
-                        }
+                }
+                //Imagenes encima de todo
+                g.setColor(Color.white);
+                g.setFont(new Font("Avenir Black", Font.ITALIC, 30));
 
-                        g.setColor(Color.white);
-
-                        for (int i = 0; i < listTop.size(); i++) {
-                            columnsTop = (Pipe) (listTop.get(i));
-                            g.drawImage(columnsTop.getImagenI(), columnsTop.getPosX(), columnsTop.getPosY(), this);
-                        }
-                        for (int i = 0; i < listBot.size(); i++) {
-                            columnsBot = (Pipe) (listBot.get(i));
-                            g.drawImage(columnsBot.getImagenI(), columnsBot.getPosX(), columnsBot.getPosY(), this);
-                        }
-
-                        if (ballClicked) {
-                            g.drawImage(fishFlap.getImagenI(), fishFlap.getPosX(), fishFlap.getPosY(), this);
-
-                        } else {
-                            g.drawImage(fishFlap1, fishFlap.getPosX(), fishFlap.getPosY(), this);
-
-                        }
-                        //Imagenes encima de todo
-                          g.setColor(Color.white);
-                        g.setFont(new Font("Avenir Black", Font.ITALIC, 30));
-
-                        g.drawString("Score: " + score, 170, 60);
-                       if (score == 5) {
-                            if (tempLevel2 < 35) {
-                                g.drawImage(level2, 30, 100, this);
-                                tempLevel2++;
-                            }
-
-                        }
-          
-                        if (score == 10) {
-                            if (tempLevel3 < 35) {
-                                g.drawImage(level3, 30, 100, this);
-                                tempLevel3++;
-                            }
-
-                        }
-                        g.drawImage(imagenAbajo1.getImagenI(), imagenAbajo1.getPosX(), imagenAbajo1.getPosY(), this);
-                        g.drawImage(imagenAbajo2.getImagenI(), imagenAbajo2.getPosX(), imagenAbajo2.getPosY(), this);
-                        if ((!go) && (tempInicio == 0)) {
-                         g.drawImage(play, getWidth()/2, getHeight()/2, this);
-                         g.drawImage(name, 80, 100, this);
-                        
-                        } else if (!go) {
-                            g.drawImage(gameover, 80, 100, this);
-                            g.drawImage(playagain, 30, 300, this);
-                        }
-         
-                     
-
-                        
+                g.drawString("Score: " + score, 170, 60);
+                if (score == 5) {
+                    if (tempLevel2 < 35) {
+                        g.drawImage(level2, 30, 100, this);
+                        tempLevel2++;
                     }
 
                 }
 
-            } else {
-                //Da un mensaje mientras se carga el dibujo	
-                g.drawString("No se cargo la imagen..", 20, 20);
+                if (score == 10) {
+                    if (tempLevel3 < 35) {
+                        g.drawImage(level3, 30, 100, this);
+                        tempLevel3++;
+                    }
+
+                }
+                g.drawImage(imagenAbajo1.getImagenI(), imagenAbajo1.getPosX(), imagenAbajo1.getPosY(), this);
+                g.drawImage(imagenAbajo2.getImagenI(), imagenAbajo2.getPosX(), imagenAbajo2.getPosY(), this);
+                if ((!go) && (tempInicio == 0)) {
+                    g.drawImage(play, getWidth() / 2, getHeight() / 2, this);
+                    g.drawImage(name, 80, 100, this);
+
+                } else if (!go) {
+                    g.drawImage(gameover, 80, 100, this);
+                    g.drawImage(playagain, 30, 300, this);
+                }
+
+                //}
             }
 
         } else {
-            g.drawImage(gameover, 0, 0, this);
-            g.setColor(Color.cyan);
-            g.setFont(new Font("Avenir Black", Font.ITALIC, 30));
-            g.drawString("Creditos: ", 85, 100);
-            g.setFont(new Font("Avenir Black", Font.BOLD, 40));
-            g.drawString("Proyecto de Video Juegos", 140, 150);
-            g.setColor(Color.green);
-            g.setFont(new Font("Avenir Black", Font.BOLD, 35));
-            g.drawString("A00812572 Gustavo Ferrufino", 140, 500);
-            g.drawString("A01191581 Andrés Gutiérrez", 140, 550);
+            //Da un mensaje mientras se carga el dibujo	
+            g.drawString("No se cargo la imagen..", 20, 20);
         }
+
     }
+
     /*
      *Metodo keyPressed
      *Cuando una tecla esta apretada
      *recibe de param un evento, en este caso se busca que sea la p
      *para pausar el juego
      */
-
     public void keyPressed(KeyEvent e) {
 
         if (e.getKeyCode() == KeyEvent.VK_P) {
 
             pause = !pause;
-
-        }
-        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            action = true;
-            teclaPresionada = 1;
-
-        }
-
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            action = true;
-            teclaPresionada = 2;
 
         }
 
@@ -791,17 +749,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             }
 
         }
-        if (e.getKeyCode() == KeyEvent.VK_I) {
 
-            if (instrucciones) {
-                instrucciones = false;
-                pause = false;
-            } else {
-                pause = true;
-                instrucciones = true;
-            }
-
-        }
         if (e.getKeyCode() == KeyEvent.VK_S) {
             soundsOn = !soundsOn;
         }
@@ -819,8 +767,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                 time = 0; //time hace que se pueda volver a hacer click;
                 ballClicked = true;
                 go = true;
-                tempInicio=10;
-                
+                tempInicio = 10;
 
             }
         }
@@ -831,8 +778,6 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     }
 
     public void keyReleased(KeyEvent e) {   //metodo cuandos e suelta la tecla
-
-        action = false; //Presiono flecha arriba
 
     }
     /*
@@ -886,12 +831,11 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     public void mouseDragged(MouseEvent e) {   //metodos de MouseMotionListener
 
     }
-    
+
     public void restart() {
-   
-    
-         diffColumns=200;
-                 
+
+        diffColumns = 200;
+
         //////
         ///1
         columnsTop = (Pipe) (listTop.get(0));
@@ -901,37 +845,29 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         columnsTop.setPosY(350 + array[tempa]);
         columnsBot.setPosX(getWidth());
         columnsBot.setPosY(-280 + array[tempa]);
-        
+
         ///2
         columnsTop = (Pipe) (listTop.get(1));
         columnsBot = (Pipe) (listBot.get(1));
         int tempb = (int) (Math.random() * 5);
-        
-        columnsTop.setPosX(getWidth() + (diffColumns+75));
+
+        columnsTop.setPosX(getWidth() + (diffColumns + 75));
         columnsTop.setPosY(350 + array[tempb]);
-        columnsBot.setPosX(getWidth() + (diffColumns+75));
+        columnsBot.setPosX(getWidth() + (diffColumns + 75));
         columnsBot.setPosY(-280 + array[tempb]);
-        
+
         ///3
-       columnsTop = (Pipe) (listTop.get(2));
-       columnsBot = (Pipe) (listBot.get(2));
-       int tempc = (int) (Math.random() * 5);
-        
-        columnsTop.setPosX(getWidth() + (diffColumns + 75)*2);
+        columnsTop = (Pipe) (listTop.get(2));
+        columnsBot = (Pipe) (listBot.get(2));
+        int tempc = (int) (Math.random() * 5);
+
+        columnsTop.setPosX(getWidth() + (diffColumns + 75) * 2);
         columnsTop.setPosY(350 + array[tempc]);
-        columnsBot.setPosX(getWidth() + (diffColumns + 75)*2);
+        columnsBot.setPosX(getWidth() + (diffColumns + 75) * 2);
         columnsBot.setPosY(-280 + array[tempc]);
-        
 
-         
-             
+        tempLevelup = 0;
 
-       
-        tempLevelup=0;
-    
-    
     }
 
- 
 }
-
