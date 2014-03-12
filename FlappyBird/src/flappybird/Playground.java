@@ -161,7 +161,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         tempInicio = 0;
         gravedad = 9;
         time = 0;
-        score = 9;                    //puntaje inicial
+        score = 0;                    //puntaje inicial
         vidas = 5;                    //vida inicial
         xMayor = (getWidth() - getWidth() / 10);           //posicion máxima en x que tendrán el fishFlap
         xMenor = 0;           //posicion mínima en x que tendrá el fishFlap
@@ -200,7 +200,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         imagenAbajo2 = new Pipe(450, getHeight() - 140, Toolkit.getDefaultToolkit().getImage(abj2URL));
 
         URL bbotURL = this.getClass().getResource("Images/barAbajo.png");
-        URL bbURL = this.getClass().getResource("Images/fish.png");
+        URL bbURL = this.getClass().getResource("Images/fish.gif");
         fireBasket = new Pipe(50, 250, Toolkit.getDefaultToolkit().getImage(bbotURL));
 
         fishFlap = new Bird(50, 250, Toolkit.getDefaultToolkit().getImage(bbURL));
@@ -293,7 +293,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         //Actualizacion de distancia entre Pilares
         if (score == 5 || score == 10 ) {
             if (tempLevelup == 0) {
-                diffColumns-=100;
+                diffColumns-=70;
                 tempLevelup++;
             }
         
@@ -463,6 +463,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
        
 
         //checa colision del pajaro con los pilares
+            /*
         for (int i = 0; i < listTop.size(); i++) {
             columnsTop = (Pipe) (listTop.get(i));
             columnsBot = (Pipe) (listBot.get(i));
@@ -483,7 +484,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
             }
         }
-
+*/
         //checa colision con el applet
         if (fireBasket.getPosY() < 0) {              //choca borde de arriba
             fireBasket.setPosY(0);
