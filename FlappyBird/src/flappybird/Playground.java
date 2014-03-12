@@ -47,9 +47,15 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private Pipe fireBasket;    // Objeto de la clase Elefante
     private Pipe imagenAbajo1;
     private Pipe imagenAbajo2;
-    private Bird basketBall;   //Objeto de la clase Raton
+    private Bird fishFlap;   //Objeto de la clase Raton
     private Rectangle box;
 
+    private int tempInicio;
+    private int tempLevel2;
+    private int tempLevel3;
+    private int tempLevelup;
+    private boolean go;
+  
     //variables auxiliares para cargar
     private String[] arr;   //arreglo para grabar
     private String nombreArchivo; //nombre del archivo que se utiliza para cargar/guardar
@@ -75,11 +81,16 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private double time;    //tiempo utilizado para la trayectoria de la parabola
 
     //imagenes
+    private Image playagain;
+    private Image name;
     private Image gameover; //imagen de gameover
     private Image background;
-    private Image basketBall1;
+    private Image fishFlap1;
     private Image fireBasket1;
     private Image chocan;
+    private Image play;
+    private Image level2;
+    private Image level3;
     private String soundOn;
     private String soundOff;
     private double velXI;
@@ -102,6 +113,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private long tiempoInicial;
     private boolean BEGIN;
     private boolean ballClicked;
+    private boolean lose;
     private boolean instrucciones;
     private int g;
     private String bclicked;
@@ -114,6 +126,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private LinkedList<Pipe> listBot;
     private Pipe columnsTop;
     private Pipe columnsBot;
+    private int diffColumns;
 
     /**
      * Metodo <I>PlayGround()</I> de la clase <code>PlayGround</code>. Es el
@@ -121,6 +134,11 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      */
     public Playground() {
 
+        tempInicio = 0;
+        tempLevel2 = 0;
+        tempLevel3 = 0;
+        tempLevelup = 0;
+        go = false;
         gameOver = false;
         setSize(450, 660);
         ballClicked = false;
@@ -135,28 +153,46 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         soundOn = "On";
         soundOff = "Off";
         soundsOn = true;
-
+        lose=false;
+        
+        diffColumns=200; //diferencia entre columna
+        
         nombreArchivo = "Archivo.txt";
-
+        tempInicio = 0;
         gravedad = 9;
         time = 0;
         score = 9;                    //puntaje inicial
         vidas = 5;                    //vida inicial
-        xMayor = (getWidth() - getWidth() / 10);           //posicion máxima en x que tendrán el basketBall
-        xMenor = 0;           //posicion mínima en x que tendrá el basketBall
-        yMayor = (getHeight() - (getHeight() / 10));          //posicion máxima en y que tendrán el basketBall
-        yMenor = 10;        //posicion mínima en y que tendrá el basketBall
+        xMayor = (getWidth() - getWidth() / 10);           //posicion máxima en x que tendrán el fishFlap
+        xMenor = 0;           //posicion mínima en x que tendrá el fishFlap
+        yMayor = (getHeight() - (getHeight() / 10));          //posicion máxima en y que tendrán el fishFlap
+        yMenor = 10;        //posicion mínima en y que tendrá el fishFlap
         velXI = 0;
         velYI = 0;
         //Se cargan los sonidos.
 
-        collide = new SoundClip("Sounds/applause.wav");
+        collide = new SoundClip("Sounds/fail-buzzer-03.wav");
         fail = new SoundClip("Sounds/fail-buzzer-03.wav");
 
-        posX = 100;     //se generarán los basketBalls en posiciones aleatorias fuera del applet
+        posX = 100;     //se generarán los fishFlaps en posiciones aleatorias fuera del applet
         posY = 100;
-
+        URL plURL = this.getClass().getResource("Images/taptoFlap.png");
+        play = Toolkit.getDefaultToolkit().getImage(plURL);
+        
+        URL tagURL = this.getClass().getResource("Images/tapagain.png");
+        playagain = Toolkit.getDefaultToolkit().getImage(tagURL);
+        
         URL fbURL = this.getClass().getResource("Images/barArriba.png");
+        
+        URL namURL = this.getClass().getResource("Images/splshyfish.png");
+        name = Toolkit.getDefaultToolkit().getImage(namURL);
+        
+        URL l2URL = this.getClass().getResource("Images/level-2.png");
+        level2 = Toolkit.getDefaultToolkit().getImage(l2URL);
+        
+        URL l3URL = this.getClass().getResource("Images/level-3.png");
+        level3 = Toolkit.getDefaultToolkit().getImage(l3URL);
+        
         URL abj1URL = this.getClass().getResource("Images/abajo1.png");
         URL abj2URL = this.getClass().getResource("Images/abajo2.png");
 
@@ -167,17 +203,17 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         URL bbURL = this.getClass().getResource("Images/fish.png");
         fireBasket = new Pipe(50, 250, Toolkit.getDefaultToolkit().getImage(bbotURL));
 
-        basketBall = new Bird(50, 250, Toolkit.getDefaultToolkit().getImage(bbURL));
+        fishFlap = new Bird(50, 250, Toolkit.getDefaultToolkit().getImage(bbURL));
 
-        box = new Rectangle(50, 250, basketBall.getAncho(), basketBall.getAlto());
-        URL xuURL = this.getClass().getResource("Images/gOVER.png");
+        box = new Rectangle(50, 250, fishFlap.getAncho(), fishFlap.getAlto());
+        URL xuURL = this.getClass().getResource("Images/gameover.png");
         gameover = Toolkit.getDefaultToolkit().getImage(xuURL);
 
         URL bgURL = this.getClass().getResource("Images/fondo.png");
         background = Toolkit.getDefaultToolkit().getImage(bgURL);
 
         URL bbalURL = this.getClass().getResource("Images/fish.png");
-        basketBall1 = Toolkit.getDefaultToolkit().getImage(bbalURL);
+        fishFlap1 = Toolkit.getDefaultToolkit().getImage(bbalURL);
 
         URL fbasURL = this.getClass().getResource("Images/fireBasket1.png");
         fireBasket1 = Toolkit.getDefaultToolkit().getImage(fbasURL);
@@ -187,16 +223,28 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         //Se cargan los pipes 
         listTop = new LinkedList<Pipe>();
         listBot = new LinkedList<Pipe>();
+        //pilar 1
+        int temp1 = (int) (Math.random() * 5);
+        columnsTop = new Pipe(getWidth(), 350 + array[temp1], Toolkit.getDefaultToolkit().getImage(fbURL));
+        listTop.add(columnsTop);
+       
+        columnsBot = new Pipe(getWidth(), -280 + array[temp1], Toolkit.getDefaultToolkit().getImage(bbotURL));
+        listBot.add(columnsBot);
+        //pilar 2
+        int temp2 = (int) (Math.random() * 5);
+        columnsTop = new Pipe(getWidth() + (diffColumns+75), 350 + array[temp2], Toolkit.getDefaultToolkit().getImage(fbURL));
+        listTop.add(columnsTop);
 
-        for (int i = 0; i < 2; i++) {
-            int temp = (int) (Math.random() * 5);
-            columnsTop = new Pipe(getWidth() + (i * 250), 350 + array[temp], Toolkit.getDefaultToolkit().getImage(fbURL));
-            listTop.add(columnsTop);
+        columnsBot = new Pipe(getWidth() + (diffColumns+75), -280 + array[temp2], Toolkit.getDefaultToolkit().getImage(bbotURL));
+        listBot.add(columnsBot);
+         //pilar3
+        int temp3 = (int) (Math.random() * 5);
+        columnsTop = new Pipe(getWidth() + (diffColumns + 75)*2, 350 + array[temp3], Toolkit.getDefaultToolkit().getImage(fbURL));
+        listTop.add(columnsTop);
 
-            columnsBot = new Pipe(getWidth() + (i * 250), -280 + array[temp], Toolkit.getDefaultToolkit().getImage(bbotURL));
-            listBot.add(columnsBot);
+        columnsBot = new Pipe(getWidth() + (diffColumns + 75)*2, -280 + array[temp3], Toolkit.getDefaultToolkit().getImage(bbotURL));
+        listBot.add(columnsBot);
 
-        }
 
         //Inicializadores 
         addKeyListener(this);
@@ -220,7 +268,7 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     public void run() {
         tiempoActual = System.currentTimeMillis();
         while (vidas > 0) {
-            if (!pause) {
+            if (go) {
                 Actualiza();
                 ChecaColision();
             }
@@ -236,11 +284,25 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
     /**
      * Metodo usado para Actualizar la posicion de objetos fireBasket y
-     * basketBall.
+     * fishFlap.
      *
      */
     public void Actualiza() {
  
+  
+        //Actualizacion de distancia entre Pilares
+        if (score == 5 || score == 10 ) {
+            if (tempLevelup == 0) {
+                diffColumns-=100;
+                tempLevelup++;
+            }
+        
+        }
+        if (score != 5 && score != 10) {
+            tempLevelup = 0;
+        }
+        //////
+        
         //si la bandera de grabar esta en true se graba el juego en el archivo 
         if (grabar) {
             try {
@@ -273,24 +335,27 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             imagenAbajo2.setPosX(450);
         }
         //Actualizacion de Pipes
-        for (int i = 0; i < listTop.size(); i++) {
+  
+            for (int i = 0; i < 3; i++) {
 
-            columnsTop = (Pipe) (listTop.get(i));
+                columnsTop = (Pipe) (listTop.get(i));
 
-            columnsTop.setPosX(columnsTop.getPosX() - 1);
+                columnsTop.setPosX(columnsTop.getPosX() - 1);
 
-            if (columnsTop.getPosX() == basketBall.getPosX()) {
-                score++;
+                if (columnsTop.getPosX() == fishFlap.getPosX()) {
+                    score++;
+                    
+                }
+
             }
+        
 
-        }
+            for (int i = 0; i < 3; i++) {
+                columnsBot = (Pipe) (listBot.get(i));
+                columnsBot.setPosX(columnsBot.getPosX() - 1);
 
-        for (int i = 0; i < listBot.size(); i++) {
-            columnsBot = (Pipe) (listBot.get(i));
-            columnsBot.setPosX(columnsBot.getPosX() - 1);
-
-        }
-
+            }
+        
         //Aumento de velocidad
         //si la bandera de cargar esta en true se carga del archivo al juego y se asignan los valores
         if (cargar) {
@@ -300,14 +365,14 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             } catch (IOException e) {
                 //System.out.println("Error en " + e.toString());
             }
-            basketBall.setConteo(sco);
+            fishFlap.setConteo(sco);
             teclaPresionada = dir;
-            basketBall.setPosX(bbposx);
-            basketBall.setPosY(bbposy);
+            fishFlap.setPosX(bbposx);
+            fishFlap.setPosY(bbposy);
             fireBasket.setPosX(fbposx);
             fireBasket.setPosY(fbposy);
-            basketBall.setSpeedX(bbspeedx);
-            basketBall.setSpeedY(bbspeedy);
+            fishFlap.setSpeedX(bbspeedx);
+            fishFlap.setSpeedY(bbspeedy);
 
             time = t;
             cargar = false;
@@ -340,10 +405,10 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         if (boxClicked) {
 
             time += 0.040;
-            // basketBall.setSpeedX(velXI);
-            basketBall.setSpeedY((velYI * -1) + gravedad * time);
-            //basketBall.setPosX(basketBall.getPosX() + (int) (basketBall.getSpeedX()));
-            basketBall.setPosY(basketBall.getPosY() + (int) (basketBall.getSpeedY()));
+            // fishFlap.setSpeedX(velXI);
+            fishFlap.setSpeedY((velYI * -1) + gravedad * time);
+            //fishFlap.setPosX(fishFlap.getPosX() + (int) (fishFlap.getSpeedX()));
+            fishFlap.setPosY(fishFlap.getPosY() + (int) (fishFlap.getSpeedY()));
 
         }
 
@@ -363,56 +428,58 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             }
         }
 
-        if (basketBall.getPosY() < getHeight()) {
-            basketBall.setPosX((int) (basketBall.getPosX() + basketBall.getSpeedX()));
+        if (fishFlap.getPosY() < getHeight()) {
+            fishFlap.setPosX((int) (fishFlap.getPosX() + fishFlap.getSpeedX()));
         }
 
     }
 
     /**
-     * Metodo usado para checar las colisiones del objeto elefante y basketBall
+     * Metodo usado para checar las colisiones del objeto elefante y fishFlap
      * con las orillas del <code>Applet</code>.
      */
     public void ChecaColision() {
-
+         
         //Pipes colisionan con lado izquierdo del applet
-        for (int i = 0; i < listTop.size(); i++) {
-            int temp = (int) (Math.random() * 5);
-            columnsTop = (Pipe) (listTop.get(i));
+       
+            for (int i = 0; i < listTop.size(); i++) {
+                int temp = (int) (Math.random() * 5);
+                columnsTop = (Pipe) (listTop.get(i));
 
-            if (columnsTop.getPosX() < -80) {
-                columnsTop.setPosX(getWidth());
-                columnsTop.setPosY(350);
-                columnsTop.setPosY(columnsTop.getPosY() + array[temp]);
+                if (columnsTop.getPosX() < -75) {
+                    columnsTop.setPosX(getWidth()+diffColumns+75);
+                    columnsTop.setPosY(350);
+                    columnsTop.setPosY(columnsTop.getPosY() + array[temp]);
+                }
+                columnsBot = (Pipe) (listBot.get(i));
+
+                if (columnsBot.getPosX() < -75) {
+                    columnsBot.setPosX(getWidth()+diffColumns+75);
+                    columnsBot.setPosY(-280);
+                    columnsBot.setPosY(columnsBot.getPosY() + array[temp]);
+
+                }
             }
-            columnsBot = (Pipe) (listBot.get(i));
-
-            if (columnsBot.getPosX() < -80) {
-                columnsBot.setPosX(getWidth());
-                columnsBot.setPosY(-280);
-                columnsBot.setPosY(columnsBot.getPosY() + array[temp]);
-
-            }
-        }
+       
 
         //checa colision del pajaro con los pilares
         for (int i = 0; i < listTop.size(); i++) {
             columnsTop = (Pipe) (listTop.get(i));
             columnsBot = (Pipe) (listBot.get(i));
 
-            if (columnsTop.intersecta(basketBall) || columnsBot.intersecta(basketBall)) {
+            if (columnsTop.intersecta(fishFlap) || columnsBot.intersecta(fishFlap)) {
                 if (true) { //soundsOn) {
                     collide.play();
 
                 }
-                score = 9;
-                basketBall.setPosX(50);     // se reposiciona el basketBall
-                basketBall.setPosY(250);
+                score = 0;
+                fishFlap.setPosX(50);     // se reposiciona el fishFlap
+                fishFlap.setPosY(250);
                 boxClicked = false;
                 time = 0;
                 ballClicked = false;
-                //IMPLEMENTAR GAME OVER
-                gameOver = true;
+                go = false;
+              
 
             }
         }
@@ -433,12 +500,12 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         if (fireBasket.getPosX() + fireBasket.getAncho() > getWidth()) {      //si se pasa del borde de la derecha
             fireBasket.setPosX(getWidth() - fireBasket.getAncho());
         }
-        //basketBall colisiona arriba
-        if (basketBall.getPosY() < 10) {
-            basketBall.setPosY(10);
+        //fishFlap colisiona arriba
+        if (fishFlap.getPosY() < 10) {
+            fishFlap.setPosY(10);
         }
-        //basketBall colisiona abajo
-        if (basketBall.getPosY() + basketBall.getAlto() > getHeight() - 30) {
+        //fishFlap colisiona abajo
+        if (fishFlap.getPosY() + fishFlap.getAlto() > getHeight()) {
 
             contPerdidas += 1;
             if (soundsOn) {
@@ -447,32 +514,32 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             score = 0;
             boxClicked = false;
             time = 0;
-            basketBall.setPosX(50);  //se reposiciona en su posicion inicial
-            basketBall.setPosY(250);
-            basketBall.setSpeedX(0);
+            fishFlap.setPosX(50);  //se reposiciona en su posicion inicial
+            fishFlap.setPosY(250);
+            fishFlap.setSpeedX(0);
+            go=false;
+            // fishFlap.setSpeedY(0);
+            bbspeedy = fishFlap.getSpeedY();
+            bbspeedx = fishFlap.getSpeedX();
 
-            // basketBall.setSpeedY(0);
-            bbspeedy = basketBall.getSpeedY();
-            bbspeedx = basketBall.getSpeedX();
-
-            if (basketBall.getConteo() > 0) {
-                basketBall.setConteo(basketBall.getConteo() - 1);
+            if (fishFlap.getConteo() > 0) {
+                fishFlap.setConteo(fishFlap.getConteo() - 1);
             }
             ballClicked = false;
         }
 
         //Colision entre objetos
-        if (fireBasket.intersecta(basketBall)) {
+        if (fireBasket.intersecta(fishFlap)) {
             boxClicked = false;
             time = 0;
             if (soundsOn) {
                 collide.play();
             }
-            basketBall.setConteo(basketBall.getConteo() + 2);
+            fishFlap.setConteo(fishFlap.getConteo() + 2);
 
-            basketBall.setPosX(50);     // se reposiciona el basketBall
-            basketBall.setPosY(250);
-            basketBall.setSpeedX(0);
+            fishFlap.setPosX(50);     // se reposiciona el fishFlap
+            fishFlap.setPosY(250);
+            fishFlap.setSpeedX(0);
             ballClicked = false;
 
         }
@@ -530,9 +597,9 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         String x;
         //direccion,score,bbposx,bbposy,fbposx,fbposy,bbspeedx,bbspeedy,time;
 
-        x = "" + (teclaPresionada) + "," + score + "," + "" + basketBall.getPosX() + ","
-                + basketBall.getPosY() + "," + fireBasket.getPosX() + "," + fireBasket.getPosY() + ","
-                + basketBall.getSpeedX() + "," + basketBall.getSpeedY() + "," + time + "," + vidas + ","
+        x = "" + (teclaPresionada) + "," + score + "," + "" + fishFlap.getPosX() + ","
+                + fishFlap.getPosY() + "," + fireBasket.getPosX() + "," + fireBasket.getPosY() + ","
+                + fishFlap.getSpeedX() + "," + fishFlap.getSpeedY() + "," + time + "," + vidas + ","
                 + contPerdidas + "," + gravedad + "," + boxClicked + "," + velXI + "," + velYI;
 
         fileOut.println(x.toString());
@@ -586,44 +653,15 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                     g.drawString(fireBasket.getPausado(), 400, 400);
                     //si la bandera booleana de instrucciones esta en true se despliega el menu de instrucciones
 
-                    if (instrucciones) {
-                        g.setColor(Color.black);
-                        g.drawRect(getWidth() / 3, getHeight() / 5, 500, 450);
-                        g.fillRect(getWidth() / 3, getHeight() / 5, 500, 450);
-                        g.setColor(Color.white);
-                        g.setFont(new Font("Avenir Black", Font.BOLD, 18));
-                        g.drawString("Instrucciones", getWidth() / 3 + 10, getHeight() / 5 + 30);
-                        g.setFont(new Font("Avenir Black", Font.BOLD, 16));
-                        g.drawString("P - Pausar", getWidth() / 3 + 50, getHeight() / 5 + 50);
-                        g.drawString("G - Guardar", getWidth() / 3 + 50, getHeight() / 5 + 70);
-                        g.drawString("C - Cargar", getWidth() / 3 + 50, getHeight() / 5 + 90);
-                        g.drawString("S - Activar/Desactivar Sonido", getWidth() / 3 + 50, getHeight() / 5 + 110);
-                        g.drawString("I - Instrucciones", getWidth() / 3 + 50, getHeight() / 5 + 130);
-                        g.drawString("Flechas (Derecha e Izquiera) - Movimiento canasta", getWidth() / 3 + 50, getHeight() / 5 + 150);
-                        g.drawString("Click en pelota - Iniciar ruta parabolica", getWidth() / 3 + 50, getHeight() / 5 + 170);
-
-                    }
+                   
 
                 } else {
                     //si la bandera booleana de instrucciones esta en true se despliega el menu de instrucciones
                     if (instrucciones) {
-                        g.setColor(Color.black);
-                        g.drawRect(getWidth() / 3, getHeight() / 5, 500, 500);
-                        g.fillRect(getWidth() / 3, getHeight() / 5, 500, 500);
-                        g.setColor(Color.white);
-                        g.setFont(new Font("Avenir Black", Font.BOLD, 18));
-                        g.drawString("Instrucciones", getWidth() / 3 + 10, getHeight() / 5 + 30);
-                        g.setFont(new Font("Avenir Black", Font.BOLD, 16));
-                        g.drawString("P - Pausar", getWidth() / 3 + 50, getHeight() / 5 + 50);
-                        g.drawString("G - Guardar", getWidth() / 3 + 50, getHeight() / 5 + 70);
-                        g.drawString("C - Cargar", getWidth() / 3 + 50, getHeight() / 5 + 90);
-                        g.drawString("S - Activar/Desactivar Sonido", getWidth() / 3 + 50, getHeight() / 5 + 110);
-                        g.drawString("I - Instrucciones", getWidth() / 3 + 50, getHeight() / 5 + 130);
-                        g.drawString("Flechas (Derecha e Izquiera) - Movimiento canasta", getWidth() / 3 + 50, getHeight() / 5 + 150);
-                        g.drawString("Click en pelota - Iniciar ruta parabolica", getWidth() / 3 + 50, getHeight() / 5 + 170);
+                    
                         pause = true;
                     } else {
-                        //Dibuja string Score
+                    
                         g.setColor(Color.white);
                         g.setFont(new Font("Avenir Black", Font.ITALIC, 18));
 
@@ -646,16 +684,46 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                         }
 
                         if (ballClicked) {
-                            g.drawImage(basketBall.getImagenI(), basketBall.getPosX(), basketBall.getPosY(), this);
+                            g.drawImage(fishFlap.getImagenI(), fishFlap.getPosX(), fishFlap.getPosY(), this);
 
                         } else {
-                            g.drawImage(basketBall1, basketBall.getPosX(), basketBall.getPosY(), this);
+                            g.drawImage(fishFlap1, fishFlap.getPosX(), fishFlap.getPosY(), this);
 
                         }
                         //Imagenes encima de todo
-                        g.drawString("Score: " + score, 200, 60);
+                          g.setColor(Color.white);
+                        g.setFont(new Font("Avenir Black", Font.ITALIC, 30));
+
+                        g.drawString("Score: " + score, 170, 60);
+                       if (score == 5) {
+                            if (tempLevel2 < 35) {
+                                g.drawImage(level2, 30, 100, this);
+                                tempLevel2++;
+                            }
+
+                        }
+          
+                        if (score == 10) {
+                            if (tempLevel3 < 35) {
+                                g.drawImage(level3, 30, 100, this);
+                                tempLevel3++;
+                            }
+
+                        }
                         g.drawImage(imagenAbajo1.getImagenI(), imagenAbajo1.getPosX(), imagenAbajo1.getPosY(), this);
                         g.drawImage(imagenAbajo2.getImagenI(), imagenAbajo2.getPosX(), imagenAbajo2.getPosY(), this);
+                        if ((!go) && (tempInicio == 0)) {
+                         g.drawImage(play, getWidth()/2, getHeight()/2, this);
+                         g.drawImage(name, 80, 100, this);
+                        
+                        } else if (!go) {
+                            g.drawImage(gameover, 80, 100, this);
+                            g.drawImage(playagain, 30, 300, this);
+                        }
+         
+                     
+
+                        
                     }
 
                 }
@@ -737,6 +805,10 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             soundsOn = !soundsOn;
         }
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            if (!go && (tempInicio != 0)) {
+                restart();
+
+            }
             if (!pause) {
 
                 boxClicked = true;
@@ -745,6 +817,9 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                 velYI = speed * (Math.sin(Math.toRadians(45)));
                 time = 0; //time hace que se pueda volver a hacer click;
                 ballClicked = true;
+                go = true;
+                tempInicio=10;
+                
 
             }
         }
@@ -767,6 +842,10 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      */
 
     public void mouseClicked(MouseEvent e) {
+        if (!go && (tempInicio != 0)) {
+            restart();
+
+        }
         if (!pause) {
 
             boxClicked = true;
@@ -775,8 +854,10 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
             velYI = speed * (Math.sin(Math.toRadians(45)));
             time = 0; //time hace que se pueda volver a hacer click;
             ballClicked = true;
+            go = true;
 
         }
+
     }
 
     public void mouseEntered(MouseEvent e) { //metodo cuando entra el mouse
@@ -804,6 +885,52 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     public void mouseDragged(MouseEvent e) {   //metodos de MouseMotionListener
 
     }
+    
+    public void restart() {
+   
+    
+         diffColumns=200;
+                 
+        //////
+        ///1
+        columnsTop = (Pipe) (listTop.get(0));
+        columnsBot = (Pipe) (listBot.get(0));
+        int tempa = (int) (Math.random() * 5);
+        columnsTop.setPosX(getWidth());
+        columnsTop.setPosY(350 + array[tempa]);
+        columnsBot.setPosX(getWidth());
+        columnsBot.setPosY(-280 + array[tempa]);
+        
+        ///2
+        columnsTop = (Pipe) (listTop.get(1));
+        columnsBot = (Pipe) (listBot.get(1));
+        int tempb = (int) (Math.random() * 5);
+        
+        columnsTop.setPosX(getWidth() + (diffColumns+75));
+        columnsTop.setPosY(350 + array[tempb]);
+        columnsBot.setPosX(getWidth() + (diffColumns+75));
+        columnsBot.setPosY(-280 + array[tempb]);
+        
+        ///3
+       columnsTop = (Pipe) (listTop.get(2));
+       columnsBot = (Pipe) (listBot.get(2));
+       int tempc = (int) (Math.random() * 5);
+        
+        columnsTop.setPosX(getWidth() + (diffColumns + 75)*2);
+        columnsTop.setPosY(350 + array[tempc]);
+        columnsBot.setPosX(getWidth() + (diffColumns + 75)*2);
+        columnsBot.setPosY(-280 + array[tempc]);
+        
+
+         
+             
+
+       
+        tempLevelup=0;
+    
+    
+    }
 
  
 }
+
