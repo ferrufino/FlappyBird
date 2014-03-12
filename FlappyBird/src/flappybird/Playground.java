@@ -45,6 +45,8 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private SoundClip fail;    // Objeto AudioClip
     private SoundClip collide;    //Objeto AudioClip 
     private Pipe fireBasket;    // Objeto de la clase Elefante
+    private Pipe imagenAbajo1;
+    private Pipe imagenAbajo2;
     private Bird basketBall;   //Objeto de la clase Raton
     private Rectangle box;
 
@@ -155,10 +157,16 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         posY = 100;
 
         URL fbURL = this.getClass().getResource("Images/barArriba.png");
+        URL abj1URL = this.getClass().getResource("Images/abajo1.png");
+        URL abj2URL = this.getClass().getResource("Images/abajo2.png");
+
+        imagenAbajo1 = new Pipe (0,getHeight()-140,Toolkit.getDefaultToolkit().getImage(abj1URL));
+        imagenAbajo2 = new Pipe (450,getHeight()-140,Toolkit.getDefaultToolkit().getImage(abj2URL));
+    
         URL bbotURL = this.getClass().getResource("Images/barAbajo.png");
         URL bbURL = this.getClass().getResource("Images/fish.png");
         fireBasket = new Pipe(50, 250, Toolkit.getDefaultToolkit().getImage(bbotURL));
-
+        
         basketBall = new Bird(50, 250, Toolkit.getDefaultToolkit().getImage(bbURL));
 
         box = new Rectangle(50, 250, basketBall.getAncho(), basketBall.getAlto());
@@ -182,10 +190,10 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
         for (int i = 0; i < 2; i++) {
             int temp = (int) (Math.random() * 2);
-            columnsTop = new Pipe(100 + (i * 200), 450 + array[temp], Toolkit.getDefaultToolkit().getImage(fbURL));
+            columnsTop = new Pipe(100 + (i * 200), 550 + array[temp], Toolkit.getDefaultToolkit().getImage(fbURL));
             listTop.add(columnsTop);
 
-            columnsBot = new Pipe(100 + (i * 200), -200 + array[temp], Toolkit.getDefaultToolkit().getImage(bbotURL));
+            columnsBot = new Pipe(100 + (i * 200), -100 + array[temp], Toolkit.getDefaultToolkit().getImage(bbotURL));
             listBot.add(columnsBot);
 
         }
@@ -241,6 +249,27 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                 System.out.println("Error en " + e.toString());
             }
             grabar = false;
+        }
+        //Actualizacion del piso debido a la velocidad de los tubos
+        //Primer Pedazo
+        if(imagenAbajo1.getPosX() != -450) {
+            
+            imagenAbajo1.setPosX(imagenAbajo1.getPosX()-1);
+        
+        }
+        if (imagenAbajo1.getPosX() == -450) {
+        
+            imagenAbajo1.setPosX(450);
+        }
+        //Segundo Pedazo
+        if(imagenAbajo2.getPosX() != -450) {
+            
+            imagenAbajo2.setPosX(imagenAbajo2.getPosX()-1);
+        
+        }
+        if (imagenAbajo2.getPosX() == -450) {
+        
+            imagenAbajo2.setPosX(450);
         }
         //Actualizacion de Pipes
         for (int i = 0; i < listTop.size(); i++) {
@@ -624,7 +653,10 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
                             g.drawImage(basketBall1, basketBall.getPosX(), basketBall.getPosY(), this);
 
                         }
+                        //Imagenes encima de todo
                          g.drawString("Score: " + score,200, 60);
+                         g.drawImage(imagenAbajo1.getImagenI(), imagenAbajo1.getPosX(), imagenAbajo1.getPosY(), this);
+                         g.drawImage(imagenAbajo2.getImagenI(), imagenAbajo2.getPosX(), imagenAbajo2.getPosY(), this);
                     }
 
                 }
