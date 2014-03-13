@@ -31,6 +31,8 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.awt.Point;
 import javax.swing.JFrame;// 
+import java.util.Vector;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -132,6 +134,11 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
     private Pipe columnsTop;
     private Pipe columnsBot;
     private int diffColumns;
+    private Vector vec;
+    private static final int WIDTH = 1000;    //Ancho del JFrame
+    private static final int EIGHT = 600;    //Alto del JFrame
+    private String nombre;
+    private String nom;
 
     /**
      * Metodo <I>PlayGround()</I> de la clase <code>PlayGround</code>. Es el
@@ -139,6 +146,10 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
      */
     public Playground() {
 
+        //Puntaje
+          nombreArchivo = "Puntaje.txt";
+          vec = new Vector();
+        //
         tempInicio = 0;
         tempLevel2 = 0;
         tempLevel3 = 0;
@@ -630,32 +641,18 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
         try {
             fileIn = new BufferedReader(new FileReader(nombreArchivo));
         } catch (FileNotFoundException e) {
-            //direccion,score,bbposx,bbposy,fbposx,fbposy,bbspeedx,bbspeedy,time;
             File puntos = new File(nombreArchivo);
             PrintWriter fileOut = new PrintWriter(puntos);
-            fileOut.println("0,0,50,250,650,460,0,5,0,7,false,3.15,5.105");
+            fileOut.println("0,Sin Nombre");
             fileOut.close();
             fileIn = new BufferedReader(new FileReader(nombreArchivo));
         }
         String dato = fileIn.readLine();
         //se pasan los datos del arreglo a las variables auxiliares
         arr = dato.split(",");
-        dir = ((arr[0].charAt(0)));
+        
         sco = (Integer.parseInt(arr[1]));
-        bbposx = (Integer.parseInt(arr[2]));
-        bbposy = (Integer.parseInt(arr[3]));
-        fbposx = (Integer.parseInt(arr[4]));
-        fbposy = (Integer.parseInt(arr[5]));
-        bbspeedx = Double.valueOf(arr[6]).doubleValue();
-        bbspeedy = Double.valueOf(arr[7]).doubleValue();
-        t = Double.valueOf(arr[8]).doubleValue();
-        v = (Integer.parseInt(arr[9]));
-        cp = (Integer.parseInt(arr[10]));
-        g = (Integer.parseInt(arr[11]));
-        bclicked = arr[12];
-        vyi = (Double.valueOf(arr[13]));
-        vxi = (Double.valueOf(arr[14]));
-
+        nom = arr[1];
         fileIn.close();
     }
 
@@ -668,12 +665,8 @@ public class Playground extends JFrame implements Runnable, KeyListener, MouseLi
 
         PrintWriter fileOut = new PrintWriter(new FileWriter(nombreArchivo));
         String x;
-        //direccion,score,bbposx,bbposy,fbposx,fbposy,bbspeedx,bbspeedy,time;
 
-        x = "" + (teclaPresionada) + "," + score + "," + "" + fishFlap.getPosX() + ","
-                + fishFlap.getPosY() + "," + fireBasket.getPosX() + "," + fireBasket.getPosY() + ","
-                + fishFlap.getSpeedX() + "," + fishFlap.getSpeedY() + "," + time + "," + vidas + ","
-                + contPerdidas + "," + gravedad + "," + boxClicked + "," + velXI + "," + velYI;
+        x = "" + score + "," + nombre;
 
         fileOut.println(x.toString());
         fileOut.close();
